@@ -95,7 +95,13 @@ conv c  | isDigit c = Just (digitToInt c)
         | otherwise = Nothing
 
 
-tuple x y = x >>= y
+ff :: (Monad m, Num a) => m b -> m (a, b)
+ff xs = do -- 123 = [(4,1),(4,2),(4,3)]
+    x <- xs
+    return (4,x)
+
+ff2 :: (Monad m, Num a) => m b -> m (a, b)
+ff2 xs = xs >>= (\x -> return (4,x))
 
 -- datatype newtype *3rd
 
