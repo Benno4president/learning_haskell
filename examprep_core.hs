@@ -109,3 +109,15 @@ ff2 xs = xs >>= (\x -> return (4,x))
 -- To be able to explain precisely what a higher-order function is and what the type of a higher-order function is
 -- To be able to explain precisely higher-order functions on lists including map, filter , foldr and foldl
 
+
+
+-- instance Functor Expr where
+--     fmap f (Val n) = Val n
+--     fmap f (Var x) = Var (f x)
+--     fmap f (Add e1 e2) = Add (fmap f e1) (fmap f e2)
+-- 
+-- instance Applicative Expr where
+--     pure = Var
+--     (Val n) <*> _ = Val n
+--     (Var f) <*> x = fmap f x
+--     (Add e1 e2) <*> x = Add (e1 <*> x) (e2 <*> x)
