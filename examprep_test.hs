@@ -1,3 +1,4 @@
+{-# LANGUAGE InstanceSigs #-}
 import Distribution.Simple.Utils (xargs)
 import Control.Applicative
 
@@ -41,7 +42,7 @@ allAnswersworks' f (x:xs) = do
 
 
 -- problem 2.1
-
+-- * fits the type
 
 a_21 :: Eq a1 => a2 -> (a1, a1) -> [a2]
 a_21 x (z, y) = [x | z == y]
@@ -124,4 +125,62 @@ seconds = do
                 putStr (show w)
 
 
+-- problem 5.1
 
+-- why cant alternating list not exists
+-- * all elements of a list must have the same time
+
+-- problem 5.2
+-- make it
+
+-- a and b is bound by type
+data Alternate a b = None | Alter a (Alternate b a) deriving Show
+
+myalt :: Alternate Integer Bool
+myalt = Alter 5 (Alter True (Alter 6 (Alter False (Alter 7 None))))
+
+--problem 5.3
+-- seperate them
+seperate :: Alternate a1 a2 -> ([a1], [a2])
+seperate None = ([],[])
+seperate (Alter x None) = ([x],[])
+seperate (Alter x (Alter y z)) = (x:xs,y:ys)
+                                where
+                                    (xs,ys) = seperate z
+
+-- problem 5.4
+-- inf alter list
+large :: Int -> Alternate Int [Char]
+large n = Alter n (Alter nas (large (n+1)))
+            where
+                nas = replicate n 'a'
+
+
+--problem 6.1
+newtype ToPairs a = TP (a,a)
+
+val1 :: ToPairs Bool
+val1 = TP (True,False)
+
+val2 :: ToPairs (Maybe Integer -> Integer)
+val2 = TP (f,g)
+    where 
+        f Nothing = 1
+        f (Just x) = x
+        g Nothing = 24
+        g (Just x) = 42
+
+
+-- problem 6.2
+instance Functor ToPairs where
+    fmap :: (a -> b) -> ToPairs a -> ToPairs b
+    fmap f (TP (x,y)) = TP (f x, f y)
+-- look for simplicity
+
+--problem 6.3
+instance Applicative ToPairs where
+    pure :: a -> ToPairs a
+    pure x = TP (x,x)
+    (<*>) :: ToPairs (a -> b) -> ToPairs a -> ToPairs b
+    (TP (x,y)) <*> (TP (c,v)) = TP (x c, x v)
+    -- **** simplicity
